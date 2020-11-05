@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Team Project</title>
+
+<script src="scripts/jquery.min.js"></script>
+<script src="scripts/lodash.min.js"></script>
+
+<style>
+    li{
+        font-size: 20px;
+        padding: 10px;
+        display: flex;
+        justify-content: space-between;
+        margin-right: 5%;
+    }
+    ul{
+        background:white;
+
+    }
+    html{
+        background-image: url("background.jpg");
+        background-size: initial;
+    }
+    .content{
+        background: white;
+        border-radius: 10px;
+        padding: 10px;
+        box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.5);
+    }
+    h1{
+        text-align: center;
+        margin-bottom: 5%;
+    }
+    .inData{
+        width: 25%;
+        background: #ededed	;
+        height: 35px;
+        align-self: center;
+        border-radius: 8px;
+        border-color: transparent;
+        font-size: 100%;
+        margin-bottom: 30px;
+    }
+    #btn{
+        width: 15%;
+        height: 41px;
+        background: #4154BF;
+        color: white;
+        font-size: 100%;
+        text-align: center;
+        border-radius: 8px;
+        border-color: transparent;
+    }
+    .inData:hover {
+        background: #F8F8F8;
+    }
+    #btn:hover{
+        background: #4E6BBF;
+    }
+    .content{
+        width: 80%;
+        margin-left: 10%;
+        margin-top: 12%;
+    }
+    .data{
+        align-content: center;
+        margin-left: 10%;
+    }
+    .items{
+        list-style-type: none;
+        width: 78%;
+        margin-left: 10%;
+        margin-top:30px;
+        border-radius: 10px;
+        box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.5);
+    }
+    .book{
+        background: limegreen;
+        color:white;
+        border-radius: 10px;
+        border-color: transparent;
+        width: 100px;
+        height: 25px;
+
+    }
+    @media only screen and (max-width: 600px){
+        .inData{
+            display: block;
+            width: 100%;
+            margin-bottom:10px;
+        }
+        #btn{
+            width:30%;
+            margin-left: 35%;
+        }
+    }
+
+
+</style>
+<script type="text/javascript">
+
+	//Make a proper table for rooms.
+    function results( items ) {
+		$("#list").html("");
+        items.forEach(function (e) {
+            $("#list").append("<li>" + e + "<p><button onClick = 'bookRooms()' class='book'>Book</button></p></li>");
+        })
+    }
+
+    function searchData(){
+        var date = $("#date").val();
+        var destination = $("#dest").val();
+        var occupancy = $("#occup").val();
+        $.ajax({
+           url: 'services/search',
+           type: 'GET',
+           dataType: 'json',
+           data: { date: date, destination: destination, occupancy: occupancy },
+           success: function (r) {
+        	   results(r);
+           }
+        });/*
+        $.post("todo", { texttosend: s}, function() {
+            getListItems();
+        });*/
+
+    }
+	//Properly call this function
+    function bookRooms(roomNumber, hotelID, guestID, date) {
+        $.ajax({
+            url : 'services/booking',
+            type : 'GET',
+            dataType: 'json',
+            data: {roomNumber: roomNumber, hotelID: hotelID, guestID: guestID, date: date},
+            success : function(msg) {
+                console.log(msg);
+                //Make a success pop-up window
+            }
+        });
+    }
+
+    $(document).ready(function () {
+       $("#btn").on('click', function () {
+           searchData();
+       });
+    });
+</script>
+</head>
+<body>
+
+<div class="content">
+    <h1>Booking</h1>
+    <div class="data">
+        <input class="inData" type="date" id="date" placeholder="Date">
+        <input class="inData" id="dest" name="" value="" class="form-control" placeholder="Destination">
+        <input class="inData" id="occup" name="" value="" class="form-control" placeholder="Occupancy">
+        <button id="btn">Search</button>
+    </div>
+</div>
+
+<ul class="items" id="list">
+
+</ul>
+</body>
+
+</html>
